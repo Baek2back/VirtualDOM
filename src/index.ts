@@ -8,6 +8,7 @@ const button = createElement("button");
 
 interface SomeComponentState {
   name: string;
+  toggle: boolean;
 }
 
 interface SomeComponentProps {
@@ -15,7 +16,7 @@ interface SomeComponentProps {
 }
 
 class SomeComponent extends Component<SomeComponentProps, SomeComponentState> {
-  state = { name: "123" };
+  state = { name: "123", toggle: true };
 
   render() {
     return div(
@@ -25,17 +26,20 @@ class SomeComponent extends Component<SomeComponentProps, SomeComponentState> {
           this.setState((prevState) => ({
             ...prevState,
             name: prevState.name + "1",
+            toggle: !prevState.toggle,
           }));
           console.log("hi");
         },
       },
       [
-        createComponent(SubComponent, {
-          onClick: (event: Event) => {
-            console.log("123");
-          },
-          text: "!231241",
-        }),
+        this.state.toggle
+          ? createComponent(SubComponent, {
+              onClick: (event: Event) => {
+                console.log("123");
+              },
+              text: "!231241",
+            })
+          : div({}, []),
         span({}, [this.state.name]),
       ]
     );
@@ -53,7 +57,9 @@ interface SubComponentState {
 
 class SubComponent extends Component<SubComponentProps, SubComponentState> {
   state = { just: "!" };
-
+  componentWillUnmount() {
+    console.log("unmount");
+  }
   render() {
     return button(
       {

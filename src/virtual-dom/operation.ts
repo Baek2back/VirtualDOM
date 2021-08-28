@@ -74,14 +74,6 @@ export const createDiff = (
 
     const domNode: Node = nodeCache.replace(oldNode, newNode);
 
-    if (oldNode.type === VDOMType.TEXT || newNode.type === VDOMType.TEXT) {
-      return {
-        type: OperationType.REPLACE,
-        node: newNode,
-        domNode,
-      };
-    }
-
     if (
       oldNode.type === VDOMType.COMPONENT &&
       newNode.type === VDOMType.COMPONENT &&
@@ -114,6 +106,14 @@ export const createDiff = (
         node: newNode.instance.initProps(newNode.props),
         domNode,
         callback: (element: Node) => newNode.instance?.notifyMounted(element),
+      };
+    }
+
+    if (oldNode.type === VDOMType.TEXT || newNode.type === VDOMType.TEXT) {
+      return {
+        type: OperationType.REPLACE,
+        node: newNode,
+        domNode,
       };
     }
 
@@ -174,7 +174,6 @@ const diffChildren = (
     for (let i = 0; i < Math.max(oldChildren.length, newChildren.length); i++) {
       const oldChild = oldChildren[i];
       const newChild = newChildren[i];
-
       if (oldChild === undefined) {
         operations.push({
           type: OperationType.APPEND,

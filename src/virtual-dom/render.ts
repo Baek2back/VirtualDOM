@@ -10,21 +10,26 @@ export const render = ((nodeCache: NodeCache) => {
       case VDOMType.ELEMENT: {
         const element: HTMLElement = document.createElement(node.tagName);
         const { props, children } = node;
+
         Object.entries(props).forEach(([key, value]) => {
           if (isListener(key)) {
             const eventType = key.toLowerCase().substring(2);
             element.addEventListener(eventType, value as EventListener);
+          } else {
+            (element as Record<string, any>)[key] = value;
           }
-          (element as Record<string, any>)[key] = value;
         });
+
         children.forEach((child) => {
           element.appendChild(render(child));
         });
+
         nodeCache.set(node, element);
         return element;
       }
       case VDOMType.TEXT: {
         const element: Text = document.createTextNode(node.value);
+
         nodeCache.set(node, element);
         return element;
       }
@@ -35,10 +40,13 @@ export const render = ((nodeCache: NodeCache) => {
           nodeCache.set(node, element);
           return element;
         }
+
         const { component: Component } = node;
         node.instance = new Component();
+
         const element = render(node.instance.initProps(node.props));
         node.instance.notifyMounted(element);
+
         nodeCache.set(node, element);
         return element;
       }
