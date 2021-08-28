@@ -36,7 +36,7 @@ export const render = ((nodeCache: NodeCache) => {
       case VDOMType.COMPONENT: {
         if (node.instance) {
           const element = render(node.instance.render());
-          node.instance.notifyMounted(element);
+          node.instance.notifyMounted();
           nodeCache.set(node, element);
           return element;
         }
@@ -45,7 +45,7 @@ export const render = ((nodeCache: NodeCache) => {
         node.instance = new Component();
 
         const element = render(node.instance.initProps(node.props));
-        node.instance.notifyMounted(element);
+        node.instance.notifyMounted();
 
         nodeCache.set(node, element);
         return element;
@@ -75,7 +75,6 @@ export const applyOperation = (operation: Operation): void => {
       const toReplace: Node = operation.domNode;
       const replacement: Node = render(operation.node);
       replaceElement(toReplace, replacement);
-      if (operation.callback) operation.callback(toReplace);
       return;
     }
     case OperationType.REMOVE: {

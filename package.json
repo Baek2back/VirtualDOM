@@ -6,7 +6,7 @@
   "author": "Baek2back <dumbuk12@naver.com>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack serve --mode=development"
+    "start": "webpack serve --mode=development --open"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.29.2",

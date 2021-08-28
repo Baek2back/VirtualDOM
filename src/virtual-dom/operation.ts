@@ -20,7 +20,6 @@ interface ReplaceOperation {
   type: OperationType.REPLACE;
   node: VDOMNode;
   domNode: Node;
-  callback?: (domNode: Node) => void;
 }
 
 interface RemoveOperation {
@@ -105,7 +104,6 @@ export const createDiff = (
         type: OperationType.REPLACE,
         node: newNode.instance.initProps(newNode.props),
         domNode,
-        callback: (element: Node) => newNode.instance?.notifyMounted(element),
       };
     }
 
