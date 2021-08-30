@@ -40,10 +40,11 @@ interface SubComponentProps {
 
 interface SubComponentState {
   toggle: boolean;
+  multipleText: string;
 }
 
 class SubComponent extends Component<SubComponentProps, SubComponentState> {
-  state = { toggle: true };
+  state = { toggle: true, multipleText: "a" };
   componentWillUnmount() {
     console.log("unmount");
   }
@@ -57,11 +58,32 @@ class SubComponent extends Component<SubComponentProps, SubComponentState> {
             return {
               ...prevState,
               toggle: !prevState.toggle,
+              multipleText: prevState.multipleText + "z",
             };
           });
+          console.log("state", this.state);
         },
       },
-      [input({}, []), button({}, ["click"]), this.state.toggle + ""]
+      [
+        input({}, []),
+        button(
+          {
+            onClick: (event: Event) => {
+              console.log("onCLick");
+              this.setState((prevState) => {
+                console.log("prevState", prevState);
+                return {
+                  ...prevState,
+                  multipleText: prevState.multipleText + "g",
+                };
+              });
+            },
+          },
+          ["click"]
+        ),
+        this.state.toggle + "",
+        this.state.multipleText,
+      ]
     );
   }
 }

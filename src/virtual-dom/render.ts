@@ -55,8 +55,8 @@ export const render = ((nodeCache: NodeCache) => {
 })(nodeCacheInstance);
 
 export function renderDOM(id: string, rootNode: VDOMNode): void {
-  const root = document.getElementById(id)!;
-  if (root == null) {
+  const root = document.getElementById(id);
+  if (root === null) {
     throw new Error("rootNode not found");
   }
   root.appendChild(render(rootNode));
@@ -65,61 +65,61 @@ export function renderDOM(id: string, rootNode: VDOMNode): void {
 export const applyOperation = (operation: Operation): void => {
   switch (operation.type) {
     case OperationType.SKIP: {
-      return;
+      break;
     }
     case OperationType.TEXT: {
       operation.domNode.textContent = operation.value;
-      return;
+      break;
     }
     case OperationType.REPLACE: {
       const toReplace: Node = operation.domNode;
       const replacement: Node = render(operation.node);
       replaceElement(toReplace, replacement);
-      return;
+      break;
     }
     case OperationType.REMOVE: {
       removeElement(operation.domNode);
-      return;
+      break;
     }
     case OperationType.APPEND: {
       const parentNode = operation.domNode;
       const toAppend = render(operation.node);
       parentNode.appendChild(toAppend);
-      return;
+      break;
     }
     case OperationType.UPDATE: {
       applyAttrs(operation.domNode as HTMLElement, operation.props);
       for (const child of operation.children) {
         applyOperation(child);
       }
-      return;
+      break;
     }
   }
 };
 
 function replaceElement(toReplace: Node, replacement: Node): void {
   const parentNode: Node | null = toReplace.parentNode;
-  if (parentNode !== null) {
-    parentNode.replaceChild(replacement, toReplace);
-  }
+  if (parentNode === null) return;
+  parentNode.replaceChild(replacement, toReplace);
 }
 
 function removeElement(node: Node): void {
   const parentNode: Node | null = node.parentNode;
-  if (parentNode !== null) {
-    parentNode.removeChild(node);
-  }
+  if (parentNode === null) return;
+  parentNode.removeChild(node);
 }
 
 function applyAttrs(element: HTMLElement, attrs: VDOMAttributes): void {
-  for (const key in attrs) {
-    const value = attrs[key];
+  Object.entries(attrs).forEach(([key, value]) => {
     if (value === undefined) {
       element.removeAttribute(key);
+      (element as Record<string, any>)[key] = undefined;
     } else {
       if (isListener(key)) return;
-      element.setAttribute(key, value as string);
+      if (typeof value === "string" || typeof value === "boolean") {
+        element.setAttribute(key, value + "");
+      }
       (element as Record<string, any>)[key] = value;
     }
-  }
+  });
 }

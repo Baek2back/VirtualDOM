@@ -61,6 +61,3 @@ export function createComponent<P extends Record<string, unknown>>(
     props,
   };
 }
-
-export const div = createElement("div");
-export const span = createElement("span");

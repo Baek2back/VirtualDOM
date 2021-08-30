@@ -42,7 +42,7 @@ export abstract class Component<P, S> {
     return operation;
   }
 
-  public notifyMounted() {
+  public notifyMounted(): void {
     requestAnimationFrame(this.componentDidMount.bind(this));
   }
 
@@ -56,10 +56,10 @@ export abstract class Component<P, S> {
     this.componentWillUnmount();
   }
 
-  public componentDidMount() {}
   public componentWillReceiveProps(props: P, state: S): S {
     return state;
   }
+  public componentDidMount() {}
   public componentDidUpdate() {}
   public componentWillUnmount() {}
 

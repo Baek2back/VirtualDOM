@@ -80,7 +80,6 @@ export const createDiff = (
       oldNode.instance
     ) {
       newNode.instance = oldNode.instance;
-      // TODO: props 비교 검증 로직 추가
       if (oldNode.props === newNode.props) {
         return { type: OperationType.SKIP };
       }
@@ -168,7 +167,6 @@ const diffChildren = (
     parentNode: Node
   ): Operation[] => {
     const operations: Operation[] = [];
-
     for (let i = 0; i < Math.max(oldChildren.length, newChildren.length); i++) {
       const oldChild = oldChildren[i];
       const newChild = newChildren[i];
